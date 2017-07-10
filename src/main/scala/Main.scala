@@ -1,6 +1,10 @@
 /**
   * Created by talm on 7/10/17.
   */
-class Main {
+object Main {
+
+  def main(args: Array[String]): Unit = {
+
+  }
 
 }
