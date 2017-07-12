@@ -15,17 +15,14 @@ object Main {
 
   private val appName = "nyc-i9e"
 
-  private val accessKey= "***"
-  private val secretKey = "***"
-
-  //https://s3.amazonaws.com/nyc-tlc/trip+data/fhv_tripdata_2015-01.csv
+  private val accessKey= ???
+  private val secretKey = ???
 
   private val s3Client = "s3n://"
 
 //    private val s3Path = "xap-test/home/tamirs/nyc/tmp.txt" // works
-
     private val s3Path = "xap-test/home/tamirs/nyc/fhv_tripdata_2015-01.csv"
-//  private val s3Path = "nyc-tlc/trip+data/fhv_tripdata_2015-01.csv"
+
   private val s3Url = s"$s3Client$s3Path"
 
   def main(args: Array[String]): Unit = {
