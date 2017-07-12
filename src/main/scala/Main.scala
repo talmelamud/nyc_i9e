@@ -1,3 +1,4 @@
+import data.TexiData
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import org.insightedge.spark.context.InsightEdgeConfig
@@ -8,7 +9,8 @@ import org.insightedge.spark.implicits.basic._
   */
 object Main {
 
-  private val master = "spark://127.0.0.1:7077"
+//  private val master = "spark://127.0.0.1:7077"
+  private val master = "local[*]"
   private val space = "insightedge-space"
   private val groups = "insightedge"
   private val locators = "127.0.0.1:4174"
@@ -21,7 +23,10 @@ object Main {
   private val s3Client = "s3n://"
 
 //    private val s3Path = "xap-test/home/tamirs/nyc/tmp.txt" // works
-    private val s3Path = "xap-test/home/tamirs/nyc/fhv_tripdata_2015-01.csv"
+
+//  private val s3Path = "xap-test/home/tamirs/nyc/fhv_tripdata_2015-01.csv"
+//  private val s3Path = "xap-test/home/tamirs/nyc/green_tripdata_2016-02.csv"
+  private val s3Path = "xap-test/home/tamirs/nyc/small.csv"
 
   private val s3Url = s"$s3Client$s3Path"
 
@@ -35,10 +40,12 @@ object Main {
 
     println(s"url reading from [$s3Url]")
     val rdd: RDD[String] = sc.textFile(s3Url)
+    rdd.filter(line => line.split(",").length == 20)
 
-    val arr: Array[String] = rdd.collect()
+    val dataRdd: RDD[TexiData] = rdd.map(line => createData(line))
+    dataRdd.saveToGrid()
 
-    arr foreach println
+    println("FINISHED !!")
   }
 
   def createSparkSession(i9eConfig: InsightEdgeConfig): SparkSession ={
@@ -47,6 +54,20 @@ object Main {
       .master(master)
       .insightEdgeConfig(i9eConfig)
       .getOrCreate()
+  }
+
+  def createData(line : String): TexiData = {
+    val fields: Array[String] = line.split(",")
+    TexiData(
+      null,
+      fields.apply(6),
+      fields.apply(7),
+      fields.apply(8),
+      fields.apply(9),
+      fields.apply(10),
+      fields.apply(11),
+      fields.apply(17)
+    )
   }
 
 }
